@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>美股交易时间监控 | 北京时间盘前盘中盘后倒计时</title>
-  <meta name="description" content="实时监控美股夏令时交易时间，按北京时间显示盘前、盘中、盘后、周末休市和 2026 年美股节假日休市状态，适合美股、Web3、链上资产套利与对冲交易者使用。">
+  <meta name="description" content="实时监控美股交易时间，自动切换夏令时与冬令时，按北京时间显示盘前、盘中、盘后、周末休市和 2026 年美股节假日休市状态，适合美股、Web3、链上资产套利与对冲交易者使用。">
   <meta name="keywords" content="美股交易时间,美股开盘时间,美股盘前时间,美股盘后时间,美股休市,北京时间美股,美股倒计时,美股交易时钟,美股夏令时,纳斯达克交易时间,纽约证券交易所交易时间">
   <meta name="author" content="美股交易时钟">
   <meta name="robots" content="index,follow,max-image-preview:large">
@@ -18,7 +18,7 @@
   <meta property="og:locale" content="zh_CN">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="美股交易时间监控 | 北京时间盘前盘中盘后倒计时">
-  <meta name="twitter:description" content="实时监控美股夏令时交易窗口，适合美股、Web3、链上资产套利与对冲交易者。">
+  <meta name="twitter:description" content="实时监控美股交易窗口，自动切换夏令时与冬令时，适合美股、Web3、链上资产套利与对冲交易者。">
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -29,7 +29,7 @@
       "applicationCategory": "金融工具",
       "operatingSystem": "任意系统",
       "inLanguage": "zh-CN",
-      "description": "实时监控美股夏令时交易时间，按北京时间显示盘前、盘中、盘后、周末休市和 2026 年美股节假日休市状态。",
+      "description": "实时监控美股交易时间，自动切换夏令时与冬令时，按北京时间显示盘前、盘中、盘后、周末休市和 2026 年美股节假日休市状态。",
       "featureList": [
         "美股盘前交易倒计时",
         "美股盘中交易倒计时",
@@ -699,6 +699,7 @@
     }
 
     .korea-card p {
+      white-space: pre-line;
       margin: 0;
       color: var(--muted);
       font-size: 13px;
@@ -785,7 +786,7 @@
         </div>
         <div>
           <h1>美股交易时钟</h1>
-          <p class="subtitle">美股夏令时交易窗口监控 · 北京时间 · 2026 休市日内置</p>
+          <p class="subtitle" id="usSeasonText">美股交易窗口监控 · 自动切换夏令时与冬令时 · 2026 休市日内置</p>
         </div>
       </div>
       <div class="clock-chip" aria-live="polite">
@@ -809,7 +810,7 @@
           </div>
           <p class="label" id="mainLabel">正在校准交易时钟</p>
           <p class="headline" id="mainCountdown">--:--:--</p>
-          <p class="assist" id="assistText">系统会自动识别盘前、盘中、盘后、周末与 2026 年主要休市节日。</p>
+          <p class="assist" id="assistText">正在读取交易日历。</p>
         </div>
 
         <aside class="side-panel">
@@ -857,7 +858,7 @@
           <span class="pill" id="pill-pre">盘前交易</span>
         </div>
         <h3 class="session-title">盘前交易</h3>
-        <p class="session-time">16:00 - 21:30</p>
+        <p class="session-time" id="time-pre">正在同步时区</p>
         <div class="session-bottom">
           <div><span class="mini-label">状态</span><strong id="state-pre">待开启</strong></div>
           <div class="session-count" id="count-pre">--:--:--</div>
@@ -874,7 +875,7 @@
           <span class="pill" id="pill-regular">盘中主力</span>
         </div>
         <h3 class="session-title">盘中主力</h3>
-        <p class="session-time">21:30 - 次日 04:00</p>
+        <p class="session-time" id="time-regular">正在同步时区</p>
         <div class="session-bottom">
           <div><span class="mini-label">状态</span><strong id="state-regular">待开启</strong></div>
           <div class="session-count" id="count-regular">--:--:--</div>
@@ -891,7 +892,7 @@
           <span class="pill" id="pill-after">盘后交易</span>
         </div>
         <h3 class="session-title">盘后交易</h3>
-        <p class="session-time">次日 04:00 - 08:00</p>
+        <p class="session-time" id="time-after">正在同步时区</p>
         <div class="session-bottom">
           <div><span class="mini-label">状态</span><strong id="state-after">待开启</strong></div>
           <div class="session-count" id="count-after">--:--:--</div>
@@ -902,7 +903,7 @@
     <div class="section-head">
       <div>
         <h2>韩国股市</h2>
-        <p class="subtitle">韩国交易所 KRX · 韩国时间与北京时间同步显示</p>
+        <p class="subtitle">韩国交易所股票市场 · 不含大宗交易及其他交易所</p>
       </div>
       <div class="hint">韩国时间比北京时间快 1 小时</div>
     </div>
@@ -945,33 +946,36 @@
 
       <div class="korea-sessions">
         <div class="korea-card" id="korea-card-pre">
-          <h4>盘前时段</h4>
-          <p>韩国时间 07:30 - 09:00<br>北京时间 06:30 - 08:00</p>
+          <h4>盘前收盘价交易</h4>
+          <p id="korea-time-pre">韩国时间 08:30 - 08:40<br>北京时间 07:30 - 07:40</p>
           <div class="korea-count" id="korea-count-pre">--:--:--</div>
         </div>
         <div class="korea-card" id="korea-card-regular">
           <h4>常规交易</h4>
-          <p>韩国时间 09:00 - 15:30<br>北京时间 08:00 - 14:30</p>
+          <p id="korea-time-regular">韩国时间 09:00 - 15:30<br>北京时间 08:00 - 14:30</p>
           <div class="korea-count" id="korea-count-regular">--:--:--</div>
         </div>
         <div class="korea-card" id="korea-card-after">
           <h4>盘后交易</h4>
-          <p>韩国时间 15:40 - 18:00<br>北京时间 14:40 - 17:00</p>
+          <p id="korea-time-after">韩国时间 15:40 - 20:00<br>北京时间 14:40 - 19:00</p>
           <div class="korea-count" id="korea-count-after">--:--:--</div>
         </div>
       </div>
     </section>
 
     <div class="holiday-box">
-      <strong>美股 2026 内置休市日：</strong>
-      01/01 元旦、01/19 马丁·路德·金纪念日、02/16 华盛顿诞辰日、04/03 耶稣受难日、05/25 阵亡将士纪念日、06/19 六月节、07/03 独立日补休、09/07 劳动节、11/26 感恩节、12/25 圣诞节。
-      韩股模块当前按 KRX 常规交易时段与周末休市计算。
+      <p id="usCalendarNote"></p>
+      <p id="koreaCalendarNote"></p>
+      <p>休市日按交易所当地日期判定，不按北京时间整日切断。美股延长时段参考纽约证交所电子市场日历；韩国盘后包含收盘价交易与延长交易。不含夜盘、个股停牌、熔断及临时休市，实际可交易品种和时段以券商及交易所公告为准。时间取自设备系统时钟，并非交易所实时时钟。</p>
+      <p>日历核对：2026-11-02 · <a href="https://www.nyse.com/trade/hours-calendars" target="_blank" rel="noopener noreferrer">美股官方日历</a> · <a href="https://global.krx.co.kr/contents/GLB/06/0602/0602020204/GLB0602020204T1.jsp" target="_blank" rel="noopener noreferrer">韩国官方时段与休市规则</a></p>
     </div>
   </main>
 
   <script>
     const TZ = "Asia/Shanghai";
-    const HOLIDAYS_2026 = new Map([
+    const US_CALENDAR_START = "2026-01-01";
+    const US_CALENDAR_END = "2028-12-31";
+    const US_HOLIDAYS = new Map([
       ["2026-01-01", "元旦"],
       ["2026-01-19", "马丁·路德·金纪念日"],
       ["2026-02-16", "华盛顿诞辰日"],
@@ -981,20 +985,68 @@
       ["2026-07-03", "独立日补休"],
       ["2026-09-07", "劳动节"],
       ["2026-11-26", "感恩节"],
-      ["2026-12-25", "圣诞节"]
+      ["2026-12-25", "圣诞节"],
+      ["2027-01-01", "元旦"],
+      ["2027-01-18", "马丁·路德·金纪念日"],
+      ["2027-02-15", "华盛顿诞辰日"],
+      ["2027-03-26", "耶稣受难日"],
+      ["2027-05-31", "阵亡将士纪念日"],
+      ["2027-06-18", "六月节补休"],
+      ["2027-07-05", "独立日补休"],
+      ["2027-09-06", "劳动节"],
+      ["2027-11-25", "感恩节"],
+      ["2027-12-24", "圣诞节补休"],
+      ["2028-01-17", "马丁·路德·金纪念日"],
+      ["2028-02-21", "华盛顿诞辰日"],
+      ["2028-04-14", "耶稣受难日"],
+      ["2028-05-29", "阵亡将士纪念日"],
+      ["2028-06-19", "六月节"],
+      ["2028-07-04", "独立日"],
+      ["2028-09-04", "劳动节"],
+      ["2028-11-23", "感恩节"],
+      ["2028-12-25", "圣诞节"]
+    ]);
+    const US_EARLY_CLOSE = new Map([
+      ["2026-11-27", "感恩节次日"], ["2026-12-24", "平安夜"],
+      ["2027-11-26", "感恩节次日"],
+      ["2028-07-03", "独立日前夕"], ["2028-11-24", "感恩节次日"]
     ]);
 
+    const US_TZ = "America/New_York";
+    const usDateFormatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: US_TZ, year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
+    });
+    // Store exchange-local hours; timezone conversion supplies the seasonal offset.
     const SESSIONS = [
-      { id: "pre", name: "盘前交易", short: "盘前", start: [16, 0], end: [21, 30], endOffset: 0 },
-      { id: "regular", name: "盘中主力", short: "盘中", start: [21, 30], end: [4, 0], endOffset: 1 },
-      { id: "after", name: "盘后交易", short: "盘后", start: [4, 0], startOffset: 1, end: [8, 0], endOffset: 1 }
+      { id: "pre", name: "盘前交易", short: "盘前", start: [4, 0], end: [9, 30] },
+      { id: "regular", name: "盘中主力", short: "盘中", start: [9, 30], end: [16, 0] },
+      { id: "after", name: "盘后交易", short: "盘后", start: [16, 0], end: [20, 0] }
     ];
 
     const KOREA_TZ = "Asia/Seoul";
+    const KOREA_CALENDAR_START = "2026-01-01";
+    const KOREA_CALENDAR_END = "2026-12-31";
+    const KOREA_HOLIDAYS = new Map([
+      ["2026-01-01", "元旦"],
+      ["2026-02-16", "春节假期"], ["2026-02-17", "春节"], ["2026-02-18", "春节假期"],
+      ["2026-03-02", "三一节补休"], ["2026-05-01", "劳动节"],
+      ["2026-05-05", "儿童节"], ["2026-05-25", "佛诞节补休"],
+      ["2026-06-03", "地方选举日"], ["2026-07-17", "制宪节"],
+      ["2026-08-17", "光复节补休"],
+      ["2026-09-24", "中秋假期"], ["2026-09-25", "中秋节"],
+      ["2026-10-05", "开天节补休"], ["2026-10-09", "韩文日"],
+      ["2026-12-25", "圣诞节"], ["2026-12-31", "年末休市"]
+    ]);
+    // Special-day exchange notices must be verified before showing exact countdowns.
+    const KOREA_UNVERIFIED = new Map([
+      ["2026-01-02", "新年首个交易日，特殊时段待核实"],
+      ["2026-11-19", "韩国高考日，特殊时段待核实"]
+    ]);
     const KOREA_SESSIONS = [
-      { id: "pre", name: "盘前时段", start: [7, 30], end: [9, 0] },
+      { id: "pre", name: "盘前收盘价交易", start: [8, 30], end: [8, 40] },
       { id: "regular", name: "常规交易", start: [9, 0], end: [15, 30] },
-      { id: "after", name: "盘后交易", start: [15, 40], end: [18, 0] }
+      { id: "after", name: "盘后交易", start: [15, 40], end: [20, 0] }
     ];
 
     const $ = (id) => document.getElementById(id);
@@ -1115,13 +1167,44 @@
 
     function isTradingDay(key) {
       const day = weekdayIndex(key);
-      return day >= 1 && day <= 5 && !HOLIDAYS_2026.has(key);
+      return key >= US_CALENDAR_START && key <= US_CALENDAR_END && day >= 1 && day <= 5 && !US_HOLIDAYS.has(key);
+    }
+
+    function usParts(date) {
+      return usDateFormatter.formatToParts(date).reduce((parts, part) => {
+        if (part.type !== "literal") parts[part.type] = part.value;
+        return parts;
+      }, {});
+    }
+
+    function usDateKey(date) {
+      const p = usParts(date);
+      return `${p.year}-${p.month}-${p.day}`;
+    }
+
+    function makeUsDate(key, hour, minute) {
+      const [y, m, d] = key.split("-").map(Number);
+      const target = Date.UTC(y, m - 1, d, hour, minute);
+      let instant = target;
+      // Session boundaries are outside the ambiguous/missing DST transition hours.
+      for (let i = 0; i < 3; i += 1) {
+        const p = usParts(new Date(instant));
+        const local = Date.UTC(+p.year, +p.month - 1, +p.day, +p.hour, +p.minute, +p.second);
+        const correction = target - local;
+        instant += correction;
+        if (correction === 0) break;
+      }
+      return new Date(instant);
     }
 
     function sessionRange(tradingKey, session) {
+      const early = US_EARLY_CLOSE.has(tradingKey);
+      const start = early && session.id === "after" ? [13, 0] : session.start;
+      const end = early && session.id === "regular" ? [13, 0]
+        : early && session.id === "after" ? [17, 0] : session.end;
       return {
-        start: makeBjDate(tradingKey, session.start[0], session.start[1], session.startOffset || 0),
-        end: makeBjDate(tradingKey, session.end[0], session.end[1], session.endOffset || 0)
+        start: makeUsDate(tradingKey, start[0], start[1]),
+        end: makeUsDate(tradingKey, end[0], end[1])
       };
     }
 
@@ -1130,7 +1213,7 @@
     }
 
     function findActive(now) {
-      const today = bjParts(now).key;
+      const today = usDateKey(now);
       const candidates = [addDaysKey(today, -1), today];
       for (const key of candidates) {
         if (!isTradingDay(key)) continue;
@@ -1142,18 +1225,20 @@
     }
 
     function nextTradingKey(fromDate) {
-      let key = bjParts(fromDate).key;
+      let key = usDateKey(fromDate);
       for (let i = 0; i < 370; i += 1) {
-        const open = makeBjDate(key, 16, 0);
+        if (key < US_CALENDAR_START || key > US_CALENDAR_END) return null;
+        const open = sessionRange(key, SESSIONS[0]).start;
         if (isTradingDay(key) && open > fromDate) return key;
         key = addDaysKey(key, 1);
       }
-      return key;
+      return null;
     }
 
     function nextSessionStart(now, session) {
-      let key = bjParts(now).key;
+      let key = usDateKey(now);
       for (let i = 0; i < 370; i += 1) {
+        if (key < US_CALENDAR_START || key > US_CALENDAR_END) return null;
         if (isTradingDay(key)) {
           const start = sessionRange(key, session).start;
           if (start > now) return start;
@@ -1175,15 +1260,11 @@
     }
 
     function marketReason(now) {
-      const parts = bjParts(now);
-      const todayHoliday = HOLIDAYS_2026.get(parts.key);
-      const yesterday = addDaysKey(parts.key, -1);
-      const afterHoliday = parts.h < 8 ? HOLIDAYS_2026.get(yesterday) : "";
-      const day = weekdayIndex(parts.key);
+      const key = usDateKey(now);
+      const todayHoliday = US_HOLIDAYS.get(key);
+      const day = weekdayIndex(key);
       if (todayHoliday) return `今日休市：${todayHoliday}`;
-      if (afterHoliday) return `延续休市：${afterHoliday}`;
-      if (day === 0 || (day === 6 && parts.h >= 8)) return "周末休市";
-      if (day === 6 && parts.h < 8) return "周五盘后已结束";
+      if (day === 0 || day === 6) return "周末休市";
       return "等待下一次盘前开启";
     }
 
@@ -1203,6 +1284,21 @@
         const state = $(`state-${session.id}`);
         const count = $(`count-${session.id}`);
         const isActive = active && active.id === session.id;
+        const start = isActive ? active.start : nextSessionStart(now, session);
+        const displayKey = isActive ? active.tradingKey : start ? usDateKey(start) : null;
+        if (!displayKey) {
+          card.classList.remove("active");
+          state.textContent = "日历待更新";
+          count.textContent = "--:--:--";
+          $(`time-${session.id}`).textContent = "时段待确认";
+          continue;
+        }
+        const range = sessionRange(displayKey, session);
+        const startParts = bjParts(range.start);
+        const endParts = bjParts(range.end);
+        const startDay = startParts.key !== displayKey ? "次日 " : "";
+        const endDay = endParts.key !== displayKey ? "次日 " : "";
+        $(`time-${session.id}`).textContent = `${startDay}${pad(startParts.h)}:${pad(startParts.min)} - ${endDay}${pad(endParts.h)}:${pad(endParts.min)}`;
         card.classList.toggle("active", Boolean(isActive));
 
         if (isActive) {
@@ -1211,9 +1307,9 @@
           continue;
         }
 
-        const start = nextSessionStart(now, session);
         if (start) {
-          state.textContent = start > now ? "待开启" : "已结束";
+          const p = bjParts(start);
+          state.textContent = `待开启 · ${p.m}/${p.d}`;
           count.textContent = `开 ${formatDuration(start - now, true)}`;
         } else {
           state.textContent = "待开启";
@@ -1274,13 +1370,14 @@
 
     function isKoreaTradingDay(key) {
       const day = koreaWeekdayIndex(key);
-      return day >= 1 && day <= 5;
+      return key >= KOREA_CALENDAR_START && key <= KOREA_CALENDAR_END
+        && day >= 1 && day <= 5 && !KOREA_HOLIDAYS.has(key) && !KOREA_UNVERIFIED.has(key);
     }
 
     function koreaSessionRange(tradingKey, session) {
       return {
         start: makeKoreaDate(tradingKey, session.start[0], session.start[1]),
-        end: makeKoreaDate(tradingKey, session.end[0], session.end[1])
+        end: makeKoreaDate(tradingKey, session.id === "after" && tradingKey < "2026-09-14" ? 18 : session.end[0], session.end[1])
       };
     }
 
@@ -1294,19 +1391,26 @@
       return null;
     }
 
-    function nextKoreaTradingKey(fromDate) {
+    function nextKoreaWindow(fromDate) {
       let key = koreaParts(fromDate).key;
       for (let i = 0; i < 370; i += 1) {
-        const open = makeKoreaDate(key, 7, 30);
-        if (isKoreaTradingDay(key) && open > fromDate) return key;
+        if (key < KOREA_CALENDAR_START || key > KOREA_CALENDAR_END) return { reason: "韩国交易日历待更新（当前仅覆盖 2026 年）" };
+        if (KOREA_UNVERIFIED.has(key)) return { reason: `${key} ${KOREA_UNVERIFIED.get(key)}` };
+        if (isKoreaTradingDay(key)) {
+          for (const session of KOREA_SESSIONS) {
+            const range = koreaSessionRange(key, session);
+            if (range.start > fromDate) return { ...session, ...range, tradingKey: key };
+          }
+        }
         key = addDaysKey(key, 1);
       }
-      return key;
+      return { reason: "韩国交易日历待更新" };
     }
 
     function nextKoreaSessionStart(now, session) {
       let key = koreaParts(now).key;
       for (let i = 0; i < 370; i += 1) {
+        if (key < KOREA_CALENDAR_START || key > KOREA_CALENDAR_END || KOREA_UNVERIFIED.has(key)) return null;
         if (isKoreaTradingDay(key)) {
           const start = koreaSessionRange(key, session).start;
           if (start > now) return start;
@@ -1321,22 +1425,37 @@
         const card = $(`korea-card-${session.id}`);
         const count = $(`korea-count-${session.id}`);
         const isActive = active && active.id === session.id;
+        const start = isActive ? active.start : nextKoreaSessionStart(now, session);
+        const displayKey = isActive ? active.tradingKey : start ? koreaParts(start).key : null;
         card.classList.toggle("active", Boolean(isActive));
+        if (!displayKey) {
+          $(`korea-time-${session.id}`).textContent = "特殊时段或交易日历待确认";
+          count.textContent = "待确认";
+          continue;
+        }
+        const range = koreaSessionRange(displayKey, session);
+        const localStart = koreaParts(range.start);
+        const localEnd = koreaParts(range.end);
+        const bjStart = bjParts(range.start);
+        const bjEnd = bjParts(range.end);
+        $(`korea-time-${session.id}`).textContent = `韩国时间 ${pad(localStart.h)}:${pad(localStart.min)} - ${pad(localEnd.h)}:${pad(localEnd.min)}\n北京时间 ${pad(bjStart.h)}:${pad(bjStart.min)} - ${pad(bjEnd.h)}:${pad(bjEnd.min)}`;
         if (isActive) {
           count.textContent = `剩 ${formatDuration(active.end - now, true)}`;
         } else {
-          const start = nextKoreaSessionStart(now, session);
-          count.textContent = start ? `开 ${formatDuration(start - now, true)}` : "--:--:--";
+          const p = koreaParts(start);
+          count.textContent = `${p.m}/${p.d} 开 ${formatDuration(start - now, true)}`;
         }
       }
     }
 
     function updateKoreaMarket(now) {
       const active = findKoreaActive(now);
-      const nextKey = nextKoreaTradingKey(now);
-      const nextOpen = makeKoreaDate(nextKey, 7, 30);
+      const upcoming = nextKoreaWindow(now);
+      const nextOpen = upcoming.start;
+      const key = koreaParts(now).key;
+      const holiday = KOREA_HOLIDAYS.get(key);
       elements.koreaLocalTime.textContent = koreaTimeText(now);
-      elements.koreaNextOpen.textContent = koreaShortDateTime(nextOpen);
+      elements.koreaNextOpen.textContent = nextOpen ? koreaShortDateTime(nextOpen) : "时段待确认";
 
       if (active) {
         elements.koreaMarket.classList.add("open");
@@ -1350,10 +1469,12 @@
       } else {
         elements.koreaMarket.classList.add("closed");
         elements.koreaMarket.classList.remove("open");
-        elements.koreaStatus.textContent = "休市中";
-        elements.koreaLabel.textContent = "距离下一次韩国股市开市";
-        elements.koreaCountdown.textContent = formatDuration(nextOpen - now);
-        elements.koreaAssist.textContent = `下一次韩股盘前时段将在韩国时间 ${koreaShortDateTime(nextOpen)} 开启，对应北京时间 ${shortDateTime(nextOpen)}。`;
+        elements.koreaStatus.textContent = nextOpen ? (holiday ? "节假日休市" : "等待交易") : "时段待确认";
+        elements.koreaLabel.textContent = nextOpen ? `距离下一次${upcoming.name}` : "特殊交易安排或日历待核实";
+        elements.koreaCountdown.textContent = nextOpen ? formatDuration(nextOpen - now) : "--:--:--";
+        elements.koreaAssist.textContent = nextOpen
+          ? `${holiday ? `韩国当地今日休市：${holiday}。` : "当前非交易时段。"}下一次${upcoming.name}将在韩国时间 ${koreaShortDateTime(nextOpen)} 开启，对应北京时间 ${shortDateTime(nextOpen)}。`
+          : `${holiday ? `韩国当地今日休市：${holiday}。` : ""}${upcoming.reason}；暂不提供精确交易倒计时，请核对交易所公告。`;
         elements.koreaPhaseEnd.textContent = "--";
         elements.koreaPhaseRemain.textContent = "--";
       }
@@ -1361,19 +1482,51 @@
       updateKoreaCards(now, active);
     }
 
-    function update() {
-      const now = new Date();
+    function updateCalendarNotes(now) {
+      const usYear = usDateKey(now).slice(0, 4);
+      const usHolidays = [...US_HOLIDAYS].filter(([key]) => key.startsWith(usYear));
+      const usEarly = [...US_EARLY_CLOSE].filter(([key]) => key.startsWith(usYear));
+      $("usCalendarNote").textContent = `美股日历覆盖 2026–2028 年。${usYear} 年全天休市：${usHolidays.map(([key, name]) => `${key.slice(5)} ${name}`).join("、") || "待更新"}。提前收盘：${usEarly.map(([key, name]) => `${key.slice(5)} ${name}`).join("、") || "无已录入安排"}；半日市正股于美东 13:00 收盘，延长时段按美东 17:00 结束计算。`;
+      $("koreaCalendarNote").textContent = `韩国 2026 年工作日休市：${[...KOREA_HOLIDAYS].map(([key, name]) => `${key.slice(5)} ${name}`).join("、")}。01-02 新年首日及 11-19 高考日特殊时段待核实，不套用普通时段。韩国日历尚未覆盖 2027 年。`;
+    }
+
+    function update(now = new Date()) {
       const active = findActive(now);
       const nextKey = nextTradingKey(now);
-      const nextOpen = makeBjDate(nextKey, 16, 0);
-      const currentKey = active ? active.tradingKey : bjParts(now).key;
-      const holidayName = HOLIDAYS_2026.get(currentKey) || HOLIDAYS_2026.get(bjParts(now).key);
+      const nextOpen = nextKey ? sessionRange(nextKey, SESSIONS[0]).start : null;
+      const currentKey = active ? active.tradingKey : usDateKey(now);
+      const holidayName = US_HOLIDAYS.get(currentKey);
 
       elements.nowText.textContent = timeText(now);
       elements.usNowText.textContent = usTimeText(now);
-      elements.tradingDateText.textContent = active ? `${active.tradingKey} · ${dayName(makeBjDate(active.tradingKey, 12))}` : `${bjParts(now).key} · ${dayName(now)}`;
-      elements.holidayText.textContent = holidayName ? `休市 · ${holidayName}` : "正常";
-      elements.nextOpenText.textContent = shortDateTime(nextOpen);
+      elements.tradingDateText.textContent = `${currentKey} · ${dayName(makeBjDate(currentKey, 12))}`;
+      updateCalendarNotes(now);
+      updateKoreaMarket(now);
+      if (!active && !nextKey) {
+        elements.hero.classList.remove("open");
+        elements.hero.classList.add("closed");
+        elements.statusText.textContent = "日历待更新";
+        elements.phaseBadge.textContent = "待确认";
+        elements.mainLabel.textContent = "后续交易安排待核实";
+        elements.mainCountdown.textContent = "--:--:--";
+        elements.assistText.textContent = "美股日历覆盖 2026–2028 年，当前或下一交易日超出范围，暂不提供精确倒计时。";
+        elements.holidayText.textContent = holidayName ? `休市 · ${holidayName}` : "待确认";
+        elements.nextOpenText.textContent = "日历待更新";
+        elements.phaseEndText.textContent = "--";
+        elements.phaseRemainText.textContent = "--";
+        elements.scrollHint.textContent = "交易日历待更新";
+        $("usSeasonText").textContent = "交易日历已到覆盖边界";
+        updateCards(now, null);
+        setFocus("top");
+        return;
+      }
+
+      const seasonKey = active ? active.tradingKey : nextKey;
+      const summer = sessionRange(seasonKey, SESSIONS[0]).start.getUTCHours() === 8;
+      $("usSeasonText").textContent = `${active ? "当前交易日" : "下一交易日"}采用美国${summer ? "夏令时" : "冬令时"} · 北京时间 · 时区自动切换`;
+
+      elements.holidayText.textContent = holidayName ? `休市 · ${holidayName}` : US_EARLY_CLOSE.has(currentKey) ? "提前收盘 · 美东 13:00" : "正常";
+      elements.nextOpenText.textContent = nextOpen ? shortDateTime(nextOpen) : "日历待更新";
 
       if (active) {
         elements.hero.classList.add("open");
@@ -1403,7 +1556,6 @@
       }
 
       updateCards(now, active);
-      updateKoreaMarket(now);
     }
 
     update();
